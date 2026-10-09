@@ -64,7 +64,6 @@ export function HomeHeader() {
       end={{ x: 1, y: 1 }}
       style={styles.header}
     >
-      yo
       <View style={styles.headerContent}>
         <HeaderProfile />
         <BalanceCard />
