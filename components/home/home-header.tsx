@@ -1,7 +1,7 @@
-import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
-import { colors } from '@/constants/colors';
+import { colors } from "@/constants/colors";
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 
 // Profil dan ringkasan saldo pengguna.
 export function HeaderProfile() {
@@ -18,14 +18,14 @@ export function HeaderProfile() {
 
       <View style={styles.profileText}>
         <Text style={styles.greeting}>Halo, Budi Santoso</Text>
-        <Text style={styles.profileSubtitle}>Eco Warrior  •  Nasabah Aktif</Text>
+        <Text style={styles.profileSubtitle}>Eco Warrior • Nasabah Aktif</Text>
       </View>
 
       <Pressable
         accessibilityRole="button"
         accessibilityLabel="Lihat notifikasi"
         style={styles.notificationButton}
-        onPress={() => Alert.alert('Notifikasi', 'Belum ada notifikasi baru.')}
+        onPress={() => Alert.alert("Notifikasi", "Belum ada notifikasi baru.")}
       >
         <Ionicons name="notifications-outline" size={21} color={colors.white} />
         <View style={styles.notificationDot} />
@@ -36,7 +36,10 @@ export function HeaderProfile() {
 
 export function BalanceCard() {
   return (
-    <View style={styles.balanceCard} accessibilityLabel="Ringkasan saldo dan poin">
+    <View
+      style={styles.balanceCard}
+      accessibilityLabel="Ringkasan saldo dan poin"
+    >
       <View style={styles.balanceColumn}>
         <Text style={styles.balanceLabel}>Saldo Dompet Eco</Text>
         <Text style={styles.balanceAmount}>Rp 124.500</Text>
@@ -56,11 +59,12 @@ export function BalanceCard() {
 export function HomeHeader() {
   return (
     <LinearGradient
-      colors={['#287944', '#1B5B3A', colors.forest]}
+      colors={["#287944", "#1B5B3A", colors.forest]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={styles.header}
     >
+      yo
       <View style={styles.headerContent}>
         <HeaderProfile />
         <BalanceCard />
@@ -71,10 +75,18 @@ export function HomeHeader() {
 
 export function ImpactCard() {
   const stats = [
-    { value: '1.240 kg', label: 'Sampah telah didaur ulang', icon: 'scale-outline' },
-    { value: '7.240', label: 'Botol PET terkumpul', icon: 'water-outline' },
-    { value: '53', label: 'Kali melakukan setor', icon: 'repeat-outline' },
-    { value: 'Rp 8,2 jt', label: 'Nilai transaksi terkumpul', icon: 'cash-outline' },
+    {
+      value: "1.240 kg",
+      label: "Sampah telah didaur ulang",
+      icon: "scale-outline",
+    },
+    { value: "7.240", label: "Botol PET terkumpul", icon: "water-outline" },
+    { value: "53", label: "Kali melakukan setor", icon: "repeat-outline" },
+    {
+      value: "Rp 8,2 jt",
+      label: "Nilai transaksi terkumpul",
+      icon: "cash-outline",
+    },
   ] as const;
 
   return (
@@ -107,39 +119,39 @@ const styles = StyleSheet.create({
     paddingBottom: 25,
   },
   headerContent: {
-    width: '100%',
+    width: "100%",
     maxWidth: 520,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   profileRow: {
     minHeight: 62,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 12,
   },
   avatarWrap: {
     width: 48,
     height: 48,
-    position: 'relative',
+    position: "relative",
   },
   avatar: {
     width: 46,
     height: 46,
     borderRadius: 23,
-    backgroundColor: '#DDEFE0',
+    backgroundColor: "#DDEFE0",
     borderWidth: 2,
-    borderColor: '#F4FAF4',
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderColor: "#F4FAF4",
+    justifyContent: "center",
+    alignItems: "center",
   },
   levelBadge: {
-    position: 'absolute',
+    position: "absolute",
     bottom: -1,
     right: -2,
     paddingHorizontal: 5,
     minWidth: 28,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
     backgroundColor: colors.gold,
     borderWidth: 1,
     borderColor: colors.white,
@@ -147,7 +159,7 @@ const styles = StyleSheet.create({
   levelText: {
     color: colors.deepForest,
     fontSize: 10,
-    fontWeight: '800',
+    fontWeight: "800",
   },
   profileText: {
     flex: 1,
@@ -156,34 +168,34 @@ const styles = StyleSheet.create({
   greeting: {
     color: colors.white,
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   profileSubtitle: {
-    alignSelf: 'flex-start',
-    overflow: 'hidden',
+    alignSelf: "flex-start",
+    overflow: "hidden",
     borderRadius: 20,
     paddingHorizontal: 8,
     paddingVertical: 3,
-    color: '#EAF4E9',
-    backgroundColor: 'rgba(255,255,255,0.14)',
+    color: "#EAF4E9",
+    backgroundColor: "rgba(255,255,255,0.14)",
     fontSize: 10,
   },
   notificationButton: {
     width: 44,
     height: 44,
     borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(255,255,255,0.14)',
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255,255,255,0.14)",
   },
   notificationDot: {
-    position: 'absolute',
+    position: "absolute",
     top: 10,
     right: 10,
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#FF8171',
+    backgroundColor: "#FF8171",
     borderWidth: 1,
     borderColor: colors.forest,
   },
@@ -193,59 +205,59 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 13,
     borderRadius: 17,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(238,249,236,0.18)',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(238,249,236,0.18)",
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.18)',
+    borderColor: "rgba(255,255,255,0.18)",
   },
   balanceColumn: {
     flex: 1,
     gap: 5,
   },
   pointsColumn: {
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
   },
   balanceLabel: {
-    color: '#E3F0E4',
+    color: "#E3F0E4",
     fontSize: 11,
   },
   balanceAmount: {
     color: colors.white,
     fontSize: 17,
-    fontWeight: '800',
+    fontWeight: "800",
   },
   balanceDivider: {
     height: 38,
     width: 1,
     marginHorizontal: 14,
-    backgroundColor: 'rgba(255,255,255,0.23)',
+    backgroundColor: "rgba(255,255,255,0.23)",
   },
   pointsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 4,
   },
   pointsAmount: {
-    color: '#FFE27A',
+    color: "#FFE27A",
     fontSize: 14,
-    fontWeight: '800',
+    fontWeight: "800",
   },
   impactCard: {
     padding: 16,
     backgroundColor: colors.white,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#EDF0E9',
-    shadowColor: '#183C24',
+    borderColor: "#EDF0E9",
+    shadowColor: "#183C24",
     shadowOpacity: 0.07,
     shadowRadius: 12,
     shadowOffset: { width: 0, height: 5 },
     elevation: 2,
   },
   sectionHeading: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 9,
     marginBottom: 13,
   },
@@ -253,41 +265,41 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 11,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: colors.mint,
   },
   cardTitle: {
     flex: 1,
     color: colors.ink,
     fontSize: 15,
-    fontWeight: '800',
+    fontWeight: "800",
   },
   statsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: 9,
   },
   statTile: {
-    flexBasis: '47%',
+    flexBasis: "47%",
     flexGrow: 1,
     minHeight: 68,
     paddingHorizontal: 10,
     paddingVertical: 9,
     borderRadius: 12,
     backgroundColor: colors.paleMint,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   statTopRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 5,
     marginBottom: 4,
   },
   statValue: {
     color: colors.deepForest,
     fontSize: 14,
-    fontWeight: '800',
+    fontWeight: "800",
   },
   statLabel: {
     color: colors.muted,
