@@ -49,6 +49,7 @@ export const articleFilters = [
 
 export const articles = [
   {
+    id: "artikel-1",
     category: "Tips Pilah Sampah",
     publishedAt: "3 jam lalu",
     readTime: "4 mnt",
@@ -57,6 +58,7 @@ export const articles = [
     color: ["#45C985", "#0E9B71"],
   },
   {
+    id: "artikel-2",
     category: "Update TPS",
     publishedAt: "1 hari lalu",
     readTime: "3 mnt",
@@ -65,6 +67,7 @@ export const articles = [
     color: ["#45C7AA", "#078E79"],
   },
   {
+    id: "artikel-3",
     category: "Edukasi",
     publishedAt: "2 hari lalu",
     readTime: "5 mnt",
@@ -73,6 +76,7 @@ export const articles = [
     color: ["#9ACD63", "#3E9A53"],
   },
   {
+    id: "artikel-4",
     category: "Tips Penjemputan Sampah",
     publishedAt: "2 hari lalu",
     readTime: "5 mnt",
@@ -81,6 +85,7 @@ export const articles = [
     color: ["#9ACD63", "#3E9A53"],
   },
   {
+    id: "artikel-5",
     category: "Tips Membeli Sampah Daur Ulang",
     publishedAt: "2 hari lalu",
     readTime: "5 mnt",

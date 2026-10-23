@@ -216,7 +216,7 @@ export function NewsSection({
       </ScrollView>
       <View style={styles.articleList}>
         {visibleArticles.map((article) => (
-          <ArticleCard key={article.title} {...article} />
+          <ArticleCard key={article.id} {...article} />
         ))}
       </View>
     </View>
