@@ -1,33 +1,37 @@
-import { Ionicons } from '@expo/vector-icons';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors } from '@/constants/colors';
+import { colors } from "@/constants/colors";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-type TabName = 'Home' | 'Marketplace' | 'Account';
+type TabName = "Home" | "Marketplace" | "Account";
 
 const tabs = [
-  { name: 'Home', icon: 'home-outline', activeIcon: 'home' },
-  { name: 'Marketplace', icon: 'bag-handle-outline', activeIcon: 'bag-handle' },
-  { name: 'Account', icon: 'person-outline', activeIcon: 'person' },
+  { name: "Home", icon: "home-outline", activeIcon: "home" },
+  { name: "Marketplace", icon: "bag-handle-outline", activeIcon: "bag-handle" },
+  { name: "Account", icon: "person-outline", activeIcon: "person" },
 ] as const;
 
 // Navigasi utama tetap terlihat di bawah layar.
 export function BottomNav({ onHomePress }: { onHomePress: () => void }) {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
 
   function handleTabPress(tab: TabName) {
-    if (tab === 'Home') {
+    if (tab === "Home") {
       onHomePress();
       return;
     }
-    Alert.alert('Segera hadir', `Halaman ${tab} akan segera tersedia.`);
+    router.push(tab === "Marketplace" ? "/marketplace" : "/account");
   }
 
   return (
-    <View style={[styles.safeArea, { paddingBottom: Math.max(insets.bottom, 8) }]}>
+    <View
+      style={[styles.safeArea, { paddingBottom: Math.max(insets.bottom, 8) }]}
+    >
       <View style={styles.nav}>
         {tabs.map((tab) => {
-          const active = tab.name === 'Home';
+          const active = tab.name === "Home";
           return (
             <Pressable
               key={tab.name}
@@ -40,9 +44,11 @@ export function BottomNav({ onHomePress }: { onHomePress: () => void }) {
               <Ionicons
                 name={active ? tab.activeIcon : tab.icon}
                 size={22}
-                color={active ? '#E6F1D8' : '#D4E0D3'}
+                color={active ? "#E6F1D8" : "#D4E0D3"}
               />
-              <Text style={[styles.label, active && styles.activeLabel]}>{tab.name}</Text>
+              <Text style={[styles.label, active && styles.activeLabel]}>
+                {tab.name}
+              </Text>
             </Pressable>
           );
         })}
@@ -58,9 +64,9 @@ const styles = StyleSheet.create({
   nav: {
     minHeight: 64,
     paddingTop: 7,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     backgroundColor: colors.forest,
@@ -68,17 +74,17 @@ const styles = StyleSheet.create({
   tab: {
     minWidth: 76,
     minHeight: 48,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     gap: 3,
   },
   label: {
-    color: '#D4E0D3',
+    color: "#D4E0D3",
     fontSize: 10,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   activeLabel: {
     color: colors.white,
-    fontWeight: '800',
+    fontWeight: "800",
   },
 });

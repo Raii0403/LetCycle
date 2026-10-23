@@ -63,3 +63,8 @@ const styles = StyleSheet.create({
     paddingTop: 14,
   },
 });
+
+
+// tambahkan 1 tombol
+// tambahkan 2 data sesuai project masing"
+// tmbahkan penggunaan inline style pada komponen yg baru di buat 
