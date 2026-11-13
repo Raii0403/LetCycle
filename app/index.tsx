@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View, type ScrollViewInstance } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BottomNav } from '@/components/home/bottom-nav';
 import { HomeHeader, ImpactCard } from '@/components/home/home-header';
@@ -13,7 +13,7 @@ import { colors } from '@/constants/colors';
 import { articleFilters } from '@/data/home';
 
 export default function HomeScreen() {
-  const scrollRef = useRef<ScrollView>(null);
+  const scrollRef = useRef<ScrollViewInstance>(null);
   const [selectedFilter, setSelectedFilter] =
     useState<(typeof articleFilters)[number]>('Semua');
 

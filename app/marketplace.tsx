@@ -1,8 +1,8 @@
 import { colors } from "@/constants/colors";
-import { formatRupiah, products, type Product } from "@/data/marketplace";
+import { formatRupiah, products } from "@/data/marketplace";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     FlatList,
     Pressable,
@@ -15,15 +15,24 @@ import {
 export default function MarketplaceScreen() {
   const router = useRouter();
   const [query, setQuery] = useState<string>("");
-  const [results, setResults] = useState<Product[]>(products);
+  const [keyword, setKeyword] = useState<string>("");
 
-  // Dijalankan setiap kali query berubah
+  // Dijalankan setiap kali query berubah: tunggu 300 ms setelah user berhenti
+  // mengetik, baru simpan sebagai keyword (debounce)
   useEffect(() => {
-    const keyword = query.trim().toLowerCase();
-    setResults(
-      products.filter((item) => item.name.toLowerCase().includes(keyword)),
-    );
+    const timer = setTimeout(() => {
+      setKeyword(query.trim().toLowerCase());
+    }, 300);
+
+    // Cleanup: batalkan timer lama kalau user masih mengetik
+    return () => clearTimeout(timer);
   }, [query]);
+
+  // Hasil filter hanya dihitung ulang ketika keyword berubah
+  const results = useMemo(
+    () => products.filter((item) => item.name.toLowerCase().includes(keyword)),
+    [keyword],
+  );
 
   return (
     <View style={styles.container}>
