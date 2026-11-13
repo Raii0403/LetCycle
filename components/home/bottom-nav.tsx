@@ -1,29 +1,25 @@
 import { colors } from "@/constants/colors";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { usePathname, useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-type TabName = "Home" | "Marketplace" | "Account";
-
 const tabs = [
-  { name: "Home", icon: "home-outline", activeIcon: "home" },
-  { name: "Marketplace", icon: "bag-handle-outline", activeIcon: "bag-handle" },
-  { name: "Account", icon: "person-outline", activeIcon: "person" },
+  { name: "Home", href: "/", icon: "home-outline", activeIcon: "home" },
+  {
+    name: "Marketplace",
+    href: "/marketplace",
+    icon: "bag-handle-outline",
+    activeIcon: "bag-handle",
+  },
+  { name: "Account", href: "/account", icon: "person-outline", activeIcon: "person" },
 ] as const;
 
-// Navigasi utama tetap terlihat di bawah layar.
-export function BottomNav({ onHomePress }: { onHomePress: () => void }) {
+// Navigasi utama dipasang di _layout sehingga tetap terlihat di semua halaman.
+export function BottomNav() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-
-  function handleTabPress(tab: TabName) {
-    if (tab === "Home") {
-      onHomePress();
-      return;
-    }
-    router.push(tab === "Marketplace" ? "/marketplace" : "/account");
-  }
+  const pathname = usePathname();
 
   return (
     <View
@@ -31,7 +27,7 @@ export function BottomNav({ onHomePress }: { onHomePress: () => void }) {
     >
       <View style={styles.nav}>
         {tabs.map((tab) => {
-          const active = tab.name === "Home";
+          const active = pathname === tab.href;
           return (
             <Pressable
               key={tab.name}
@@ -39,7 +35,9 @@ export function BottomNav({ onHomePress }: { onHomePress: () => void }) {
               accessibilityLabel={tab.name}
               accessibilityState={{ selected: active }}
               style={styles.tab}
-              onPress={() => handleTabPress(tab.name)}
+              onPress={() => {
+                if (!active) router.replace(tab.href);
+              }}
             >
               <Ionicons
                 name={active ? tab.activeIcon : tab.icon}
@@ -66,13 +64,15 @@ const styles = StyleSheet.create({
     paddingTop: 7,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-around",
+    alignSelf: "center",
+    width: "100%",
+    maxWidth: 720,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     backgroundColor: colors.forest,
   },
   tab: {
-    minWidth: 76,
+    flex: 1,
     minHeight: 48,
     alignItems: "center",
     justifyContent: "center",

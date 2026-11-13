@@ -1,7 +1,6 @@
-import { useRef, useState } from 'react';
-import { ScrollView, StyleSheet, View, type ScrollViewInstance } from 'react-native';
+import { useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { BottomNav } from '@/components/home/bottom-nav';
 import { HomeHeader, ImpactCard } from '@/components/home/home-header';
 import {
   CategoriesSection,
@@ -12,13 +11,11 @@ import {
 import { colors } from '@/constants/colors';
 
 export default function HomeScreen() {
-  const scrollRef = useRef<ScrollViewInstance>(null);
   const [selectedFilter, setSelectedFilter] = useState<string>('Semua');
 
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
       <ScrollView
-        ref={scrollRef}
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -35,7 +32,6 @@ export default function HomeScreen() {
           <TipCard />
         </View>
       </ScrollView>
-      <BottomNav onHomePress={() => scrollRef.current?.scrollTo({ y: 0, animated: true })} />
     </SafeAreaView>
   );
 }
@@ -54,7 +50,7 @@ const styles = StyleSheet.create({
   },
   content: {
     width: '100%',
-    maxWidth: 520,
+    maxWidth: 760,
     alignSelf: 'center',
     gap: 14,
     paddingHorizontal: 16,

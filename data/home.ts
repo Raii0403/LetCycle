@@ -4,12 +4,17 @@ export const collectionPoints = [
     address: "Jl. Jenderal Sudirman No. 45, Purwokerto",
     phone: "(0281) 635 120",
     distance: "1,2 km",
+    // Koordinat perkiraan, sesuaikan dengan lokasi sebenarnya.
+    latitude: -7.4246,
+    longitude: 109.2332,
   },
   {
     name: "Bank Sampah Hijau Banyumas",
     address: "Jl. Gerilya Timur No. 18, Purwokerto",
     phone: "(0281) 641 208",
     distance: "2,4 km",
+    latitude: -7.4172,
+    longitude: 109.2605,
   },
 ];
 

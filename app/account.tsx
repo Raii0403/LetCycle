@@ -3,9 +3,8 @@ import { Loading } from "@/components/Loading";
 import { colors } from "@/constants/colors";
 import { fetchJson } from "@/services/api";
 import type { User } from "@/types/user";
-import { useRouter } from "expo-router";
 import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 // Memuat profil pengguna dari API dan memperbarui status layar.
 function loadUser(
@@ -30,18 +29,9 @@ function loadUser(
 }
 
 export default function AccountScreen() {
-  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
-  function kembaliAman() {
-    if (router.canGoBack()) {
-      router.back();
-    } else {
-      router.replace("/");
-    }
-  }
 
   useEffect(() => {
     loadUser(setUser, setLoading, setError);
@@ -64,10 +54,6 @@ export default function AccountScreen() {
           <Text style={styles.subtitle}>Eco Warrior • Nasabah Aktif</Text>
         </>
       ) : null}
-
-      <Pressable style={styles.button} onPress={kembaliAman}>
-        <Text style={styles.buttonText}>Kembali ke Home</Text>
-      </Pressable>
     </View>
   );
 }
@@ -75,18 +61,13 @@ export default function AccountScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: "100%",
+    maxWidth: 720,
+    alignSelf: "center",
     padding: 24,
     justifyContent: "center",
     backgroundColor: colors.paleMint,
   },
   name: { color: colors.ink, fontSize: 22, fontWeight: "800" },
   subtitle: { color: colors.muted, marginTop: 4, marginBottom: 24 },
-  button: {
-    minHeight: 44,
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: colors.forest,
-  },
-  buttonText: { color: colors.white, fontWeight: "800" },
 });

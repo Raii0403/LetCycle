@@ -6,6 +6,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  useWindowDimensions,
   View,
 } from 'react-native';
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
@@ -19,6 +20,8 @@ import {
 } from '@/data/home';
 import { getArticles } from '@/services/articleService';
 import type { Article } from '@/types/article';
+import { TpsMap } from '@/components/TpsMap';
+import { openCollectionSearch, openDirections } from '@/utils/maps';
 
 // Daftar tempat setor sampah terdekat.
 export function TpsListItem({
@@ -26,6 +29,8 @@ export function TpsListItem({
   address,
   phone,
   distance,
+  latitude,
+  longitude,
 }: (typeof collectionPoints)[number]) {
   return (
     <View style={styles.tpsItem}>
@@ -41,7 +46,7 @@ export function TpsListItem({
         accessibilityRole="button"
         accessibilityLabel={`Lihat arah ke ${name}`}
         style={styles.directionButton}
-        onPress={() => Alert.alert('Petunjuk arah', `Arah ke ${name} (${distance}).`)}
+        onPress={() => void openDirections(latitude, longitude)}
       >
         <Ionicons name="navigate-outline" size={17} color={colors.forest} />
       </Pressable>
@@ -50,6 +55,9 @@ export function TpsListItem({
 }
 
 export function CollectionPointsCard() {
+  const { width } = useWindowDimensions();
+  // Layar lebar (tablet/landscape): peta di kiri, daftar di kanan.
+  const wide = width >= 640;
   return (
     <View style={styles.collectionCard}>
       <View style={styles.sectionHeader}>
@@ -59,15 +67,20 @@ export function CollectionPointsCard() {
           accessibilityLabel="Lihat semua tempat pengumpulan"
           hitSlop={8}
           style={styles.seeAllLocations}
-          onPress={() => Alert.alert('Tempat pengumpulan', 'Daftar tempat pengumpulan terdekat.')}
+          onPress={() => void openCollectionSearch()}
         >
           <Ionicons name="chevron-forward" size={20} color={colors.forest} />
         </Pressable>
       </View>
-      <View style={styles.tpsList}>
-        {collectionPoints.map((point) => (
-          <TpsListItem key={point.name} {...point} />
-        ))}
+      <View style={[styles.collectionBody, wide && styles.collectionBodyWide]}>
+        <View style={wide ? styles.mapWide : styles.mapNarrow}>
+          <TpsMap height={wide ? 260 : Math.min(240, Math.round(width * 0.55))} />
+        </View>
+        <View style={[styles.tpsList, wide && styles.tpsListWide]}>
+          {collectionPoints.map((point) => (
+            <TpsListItem key={point.name} {...point} />
+          ))}
+        </View>
       </View>
     </View>
   );
@@ -304,6 +317,22 @@ const styles = StyleSheet.create({
     minHeight: 44,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  collectionBody: {
+    gap: 10,
+  },
+  collectionBodyWide: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  mapNarrow: {
+    width: '100%',
+  },
+  mapWide: {
+    flex: 1,
+  },
+  tpsListWide: {
+    flex: 1,
   },
   tpsList: {
     borderRadius: 13,
