@@ -1,3 +1,4 @@
+import { AddProductModal } from "@/components/AddProductModal";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { Loading } from "@/components/Loading";
 import { colors } from "@/constants/colors";
@@ -108,6 +109,7 @@ export default function MarketplaceScreen() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [showForm, setShowForm] = useState<boolean>(false);
 
   // Dijalankan setiap kali query berubah: tunggu 300 ms setelah user berhenti
   // mengetik, baru simpan sebagai keyword (debounce)
@@ -139,16 +141,33 @@ export default function MarketplaceScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.searchBox}>
-        <Ionicons name="search-outline" size={18} color={colors.muted} />
-        <TextInput
-          placeholder="Cari barang daur ulang..."
-          placeholderTextColor={colors.muted}
-          value={query}
-          onChangeText={setQuery}
-          style={styles.input}
-        />
+      <View style={styles.topRow}>
+        <View style={styles.searchBox}>
+          <Ionicons name="search-outline" size={18} color={colors.muted} />
+          <TextInput
+            placeholder="Cari barang daur ulang..."
+            placeholderTextColor={colors.muted}
+            value={query}
+            onChangeText={setQuery}
+            style={styles.input}
+          />
+        </View>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Jual barang"
+          style={styles.sellButton}
+          onPress={() => setShowForm(true)}
+        >
+          <Ionicons name="add" size={20} color={colors.white} />
+          <Text style={styles.sellText}>Jual</Text>
+        </Pressable>
       </View>
+
+      <AddProductModal
+        visible={showForm}
+        onClose={() => setShowForm(false)}
+        onAdded={(product) => setProducts((prev) => [product, ...prev])}
+      />
 
       <ScrollView
         horizontal
@@ -210,7 +229,19 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     backgroundColor: colors.paleMint,
   },
+  topRow: { flexDirection: "row", gap: 8 },
+  sellButton: {
+    minHeight: 46,
+    paddingHorizontal: 14,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    borderRadius: 12,
+    backgroundColor: colors.forest,
+  },
+  sellText: { color: colors.white, fontWeight: "800" },
   searchBox: {
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     gap: 8,

@@ -13,7 +13,51 @@ export const categoryLabels: Record<string, string> = {
   "kitchen-accessories": "Dapur",
 };
 
-const CONDITIONS = ["Bekas Layak Pakai", "Seperti Baru", "Hasil Daur Ulang"];
+export const CONDITIONS = ["Bekas Layak Pakai", "Seperti Baru", "Hasil Daur Ulang"];
+
+export interface NewProductInput {
+  name: string;
+  price: string;
+  category: string;
+  condition: string;
+  sellerName: string;
+  city: string;
+}
+
+// Menambahkan barang baru. resolve() jika data valid, reject() jika tidak.
+export function addProduct(input: NewProductInput): Promise<Product> {
+  return new Promise<Product>((resolve, reject) => {
+    const price = Number(input.price.replace(/\D/g, ""));
+    if (!input.name.trim()) {
+      reject("Nama barang wajib diisi.");
+      return;
+    }
+    if (price <= 0) {
+      reject("Harga harus berupa angka lebih dari 0.");
+      return;
+    }
+    if (!input.sellerName.trim() || !input.city.trim()) {
+      reject("Nama penjual dan kota wajib diisi.");
+      return;
+    }
+
+    delay(800).then(() => {
+      const product: Product = {
+        id: `lokal-${Date.now()}`,
+        name: input.name.trim(),
+        price,
+        category: input.category,
+        condition: input.condition,
+        sellerName: input.sellerName.trim(),
+        city: input.city.trim(),
+        // Belum ada fitur unggah foto, jadi memakai gambar placeholder.
+        thumbnail: `https://picsum.photos/seed/${encodeURIComponent(input.name.trim())}/400`,
+      };
+      cachedProducts = [product, ...(cachedProducts ?? [])];
+      resolve(product);
+    });
+  });
+}
 const CITIES = ["Purwokerto", "Banyumas", "Purbalingga", "Cilacap", "Sokaraja"];
 
 let cachedProducts: Product[] | null = null;
