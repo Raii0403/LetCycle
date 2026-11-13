@@ -1,21 +1,57 @@
 import { colors } from "@/constants/colors";
-import { formatRupiah, products } from "@/data/marketplace";
+import { ErrorMessage } from "@/components/ErrorMessage";
+import { Loading } from "@/components/Loading";
+import { formatRupiah, type Product } from "@/data/marketplace";
+import { getProducts } from "@/services/productService";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useEffect, useMemo, useState } from "react";
 import {
-    FlatList,
-    Pressable,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
+  useEffect,
+  useMemo,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
+import {
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
+
+// Memuat produk dan memperbarui tampilan sesuai hasil permintaan API.
+async function loadProducts(
+  setProducts: Dispatch<SetStateAction<Product[]>>,
+  setLoading: Dispatch<SetStateAction<boolean>>,
+  setError: Dispatch<SetStateAction<string | null>>,
+) {
+  setLoading(true);
+  setError(null);
+  try {
+    const data = await getProducts();
+    setProducts(data);
+  } catch (error) {
+    if (typeof error === "string") {
+      setError(error);
+    } else if (error instanceof Error) {
+      setError(error.message);
+    } else {
+      setError("Gagal memuat produk.");
+    }
+  } finally {
+    setLoading(false);
+  }
+}
 
 export default function MarketplaceScreen() {
   const router = useRouter();
   const [query, setQuery] = useState<string>("");
   const [keyword, setKeyword] = useState<string>("");
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Dijalankan setiap kali query berubah: tunggu 300 ms setelah user berhenti
   // mengetik, baru simpan sebagai keyword (debounce)
@@ -28,10 +64,14 @@ export default function MarketplaceScreen() {
     return () => clearTimeout(timer);
   }, [query]);
 
-  // Hasil filter hanya dihitung ulang ketika keyword berubah
+  useEffect(() => {
+    void loadProducts(setProducts, setLoading, setError);
+  }, []);
+
+  // Hasil filter dihitung ulang ketika data produk atau keyword berubah.
   const results = useMemo(
     () => products.filter((item) => item.name.toLowerCase().includes(keyword)),
-    [keyword],
+    [products, keyword],
   );
 
   return (
@@ -43,23 +83,34 @@ export default function MarketplaceScreen() {
         style={styles.input}
       />
 
-      <FlatList
-        data={results}
-        keyExtractor={(item) => item.id}
-        ListEmptyComponent={<Text style={styles.empty}>Tidak ada hasil.</Text>}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Ionicons name={item.icon} size={24} color={colors.green} />
-            <View style={styles.cardText}>
-              <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.price}>{formatRupiah(item.price)} / kg</Text>
+      {loading ? (
+        <Loading message="Memuat produk..." />
+      ) : error ? (
+        <ErrorMessage
+          message={error}
+          onRetry={() => {
+            void loadProducts(setProducts, setLoading, setError);
+          }}
+        />
+      ) : (
+        <FlatList
+          data={results}
+          keyExtractor={(item) => item.id}
+          ListEmptyComponent={<Text style={styles.empty}>Tidak ada hasil.</Text>}
+          renderItem={({ item }) => (
+            <View style={styles.card}>
+              <Ionicons name={item.icon} size={24} color={colors.green} />
+              <View style={styles.cardText}>
+                <Text style={styles.name}>{item.name}</Text>
+                <Text style={styles.price}>{formatRupiah(item.price)} / kg</Text>
+              </View>
+              {item.stock !== undefined && (
+                <Text style={styles.stock}>Stok {item.stock}</Text>
+              )}
             </View>
-            {item.stock !== undefined && (
-              <Text style={styles.stock}>Stok {item.stock}</Text>
-            )}
-          </View>
-        )}
-      />
+          )}
+        />
+      )}
 
       <Pressable style={styles.backButton} onPress={() => router.back()}>
         <Text style={styles.backText}>Kembali</Text>

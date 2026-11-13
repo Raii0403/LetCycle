@@ -8,16 +8,17 @@ import {
   Text,
   View,
 } from 'react-native';
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
+import { ErrorMessage } from '@/components/ErrorMessage';
+import { Loading } from '@/components/Loading';
 import { colors } from '@/constants/colors';
 import {
-  articles,
-  articleFilters,
   collectionPoints,
   recyclingFact,
   wasteCategories,
 } from '@/data/home';
-
-type Filter = (typeof articleFilters)[number];
+import { getArticles } from '@/services/articleService';
+import type { Article } from '@/types/article';
 
 // Daftar tempat setor sampah terdekat.
 export function TpsListItem({
@@ -118,7 +119,7 @@ export function FilterChip({
   active,
   onPress,
 }: {
-  label: Filter;
+  label: string;
   active: boolean;
   onPress: () => void;
 }) {
@@ -141,7 +142,7 @@ export function ArticleCard({
   title,
   icon,
   color,
-}: (typeof articles)[number]) {
+}: Article) {
   return (
     <Pressable
       accessibilityRole="button"
@@ -172,13 +173,44 @@ export function ArticleCard({
   );
 }
 
+// Memuat artikel dan memperbarui status daftar, loading, serta error.
+function loadArticles(
+  setArticles: Dispatch<SetStateAction<Article[]>>,
+  setLoading: Dispatch<SetStateAction<boolean>>,
+  setError: Dispatch<SetStateAction<string | null>>,
+) {
+  setLoading(true);
+  setError(null);
+  getArticles()
+    .then((data) => setArticles(data))
+    .catch((error: unknown) => {
+      if (typeof error === 'string') {
+        setError(error);
+      } else if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError('Gagal memuat artikel.');
+      }
+    })
+    .finally(() => setLoading(false));
+}
+
 export function NewsSection({
   selectedFilter,
   onSelectFilter,
 }: {
-  selectedFilter: Filter;
-  onSelectFilter: (filter: Filter) => void;
+  selectedFilter: string;
+  onSelectFilter: (filter: string) => void;
 }) {
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    loadArticles(setArticles, setLoading, setError);
+  }, []);
+
+  const filters = ['Semua', ...new Set(articles.map((article) => article.category))];
   const visibleArticles = articles.filter(
     (article) => selectedFilter === 'Semua' || article.category === selectedFilter,
   );
@@ -205,7 +237,7 @@ export function NewsSection({
         contentContainerStyle={styles.filterList}
         accessibilityLabel="Filter berita"
       >
-        {articleFilters.map((filter) => (
+        {filters.map((filter) => (
           <FilterChip
             key={filter}
             label={filter}
@@ -215,9 +247,18 @@ export function NewsSection({
         ))}
       </ScrollView>
       <View style={styles.articleList}>
-        {visibleArticles.map((article) => (
-          <ArticleCard key={article.id} {...article} />
-        ))}
+        {loading ? (
+          <Loading message="Memuat berita..." />
+        ) : error ? (
+          <ErrorMessage
+            message={error}
+            onRetry={() => loadArticles(setArticles, setLoading, setError)}
+          />
+        ) : (
+          visibleArticles.map((article) => (
+            <ArticleCard key={article.id} {...article} />
+          ))
+        )}
       </View>
     </View>
   );

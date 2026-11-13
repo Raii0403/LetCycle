@@ -10,12 +10,10 @@ import {
   TipCard,
 } from '@/components/home/home-sections';
 import { colors } from '@/constants/colors';
-import { articleFilters } from '@/data/home';
 
 export default function HomeScreen() {
   const scrollRef = useRef<ScrollViewInstance>(null);
-  const [selectedFilter, setSelectedFilter] =
-    useState<(typeof articleFilters)[number]>('Semua');
+  const [selectedFilter, setSelectedFilter] = useState<string>('Semua');
 
   return (
     <SafeAreaView edges={['top']} style={styles.safeArea}>
