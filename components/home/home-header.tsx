@@ -1,10 +1,17 @@
 import { colors } from "@/constants/colors";
+import { useAuth } from "@/context/AuthContext";
+import { useHomeData } from "@/context/HomeDataContext";
+import { formatCompactRupiah, formatKg, formatNumber } from "@/utils/format";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 
 // Profil dan ringkasan saldo pengguna.
 export function HeaderProfile() {
+  const { user, signOut } = useAuth();
+  const username =
+    (user?.user_metadata?.username as string | undefined) ?? "Pengguna";
+
   return (
     <View style={styles.profileRow}>
       <View style={styles.avatarWrap}>
@@ -17,8 +24,8 @@ export function HeaderProfile() {
       </View>
 
       <View style={styles.profileText}>
-        <Text style={styles.greeting}>Halo, Budi Santoso</Text>
-        <Text style={styles.profileSubtitle}>Eco Warrior • Nasabah Aktif</Text>
+        <Text style={styles.greeting}>Halo, {username}</Text>
+        <Text style={styles.profileSubtitle}>{user?.email}</Text>
       </View>
 
       <Pressable
@@ -30,11 +37,21 @@ export function HeaderProfile() {
         <Ionicons name="notifications-outline" size={21} color={colors.white} />
         <View style={styles.notificationDot} />
       </Pressable>
+
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="Keluar"
+        style={styles.notificationButton}
+        onPress={() => signOut()}
+      >
+        <Ionicons name="log-out-outline" size={21} color={colors.white} />
+      </Pressable>
     </View>
   );
 }
 
 export function BalanceCard() {
+  const { totals } = useHomeData();
   return (
     <View
       style={styles.balanceCard}
@@ -42,14 +59,14 @@ export function BalanceCard() {
     >
       <View style={styles.balanceColumn}>
         <Text style={styles.balanceLabel}>Saldo Dompet Eco</Text>
-        <Text style={styles.balanceAmount}>Rp 124.500</Text>
+        <Text style={styles.balanceAmount}>Rp {formatNumber(totals.amount)}</Text>
       </View>
       <View style={styles.balanceDivider} />
       <View style={[styles.balanceColumn, styles.pointsColumn]}>
         <Text style={styles.balanceLabel}>Total Poin Daur Ulang</Text>
         <View style={styles.pointsRow}>
           <Ionicons name="star" size={15} color={colors.gold} />
-          <Text style={styles.pointsAmount}>1.420 EcoPoints</Text>
+          <Text style={styles.pointsAmount}>{formatNumber(totals.points)} EcoPoints</Text>
         </View>
       </View>
     </View>
@@ -73,19 +90,12 @@ export function HomeHeader() {
 }
 
 export function ImpactCard() {
+  const { totals } = useHomeData();
   const stats = [
-    {
-      value: "1.240 kg",
-      label: "Sampah telah didaur ulang",
-      icon: "scale-outline",
-    },
-    { value: "7.240", label: "Botol PET terkumpul", icon: "water-outline" },
-    { value: "53", label: "Kali melakukan setor", icon: "repeat-outline" },
-    {
-      value: "Rp 8,2 jt",
-      label: "Nilai transaksi terkumpul",
-      icon: "cash-outline",
-    },
+    { value: formatKg(totals.kg), label: "Sampah telah didaur ulang", icon: "scale-outline" },
+    { value: formatNumber(totals.bottles), label: "Botol PET terkumpul", icon: "water-outline" },
+    { value: formatNumber(totals.count), label: "Kali melakukan setor", icon: "repeat-outline" },
+    { value: formatCompactRupiah(totals.amount), label: "Nilai transaksi terkumpul", icon: "cash-outline" },
   ] as const;
 
   return (

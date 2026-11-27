@@ -8,6 +8,8 @@ export interface Product {
   sellerName: string;
   city: string;
   thumbnail: string;
+  // Terisi jika ini jualan milik user yang login (berasal dari Supabase).
+  ownerId?: string;
 }
 
 export function formatRupiah(angka: number): string {

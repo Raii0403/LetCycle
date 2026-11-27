@@ -1,22 +1,28 @@
-import { collectionPoints } from "@/data/home";
+import type { CollectionPointRow } from "@/types/home";
 import { StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
 // Peta Android/iOS yang menandai semua TPS.
-export function TpsMap({ height = 220 }: { height?: number }) {
+export function TpsMap({
+  points,
+  height = 220,
+}: {
+  points: CollectionPointRow[];
+  height?: number;
+}) {
   return (
     <MapView
       style={[styles.map, { height }]}
       initialRegion={{
-        latitude: -7.4209,
-        longitude: 109.247,
+        latitude: points[0]?.latitude ?? -7.4209,
+        longitude: points[0]?.longitude ?? 109.247,
         latitudeDelta: 0.04,
         longitudeDelta: 0.04,
       }}
     >
-      {collectionPoints.map((point) => (
+      {points.map((point) => (
         <Marker
-          key={point.name}
+          key={point.id}
           coordinate={{ latitude: point.latitude, longitude: point.longitude }}
           title={point.name}
           description={point.address}

@@ -1,8 +1,14 @@
 import { colors } from "@/constants/colors";
+import type { CollectionPointRow } from "@/types/home";
 import { StyleSheet, Text, View } from "react-native";
 
 // Versi web: react-native-maps tidak mendukung web.
-export function TpsMap({ height = 120 }: { height?: number }) {
+export function TpsMap({
+  height = 120,
+}: {
+  points?: CollectionPointRow[];
+  height?: number;
+}) {
   return (
     <View style={[styles.box, { minHeight: Math.min(height, 120) }]}>
       <Text style={styles.text}>

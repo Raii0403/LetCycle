@@ -41,3 +41,10 @@ app-example
 # generated native folders
 /ios
 /android
+
+# env (berisi kredensial)
+.env
+
+# Supabase CLI
+supabase/.temp/
+supabase/.branches/

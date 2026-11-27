@@ -1,16 +1,18 @@
 import { useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { HomeHeader, ImpactCard } from '@/components/home/home-header';
 import {
   CategoriesSection,
   CollectionPointsCard,
-  NewsSection,
-  TipCard,
-} from '@/components/home/home-sections';
+  DepositsSection,
+} from '@/components/home/data-sections';
+import { NewsSection, TipCard } from '@/components/home/home-sections';
+import { HomeDataProvider, useHomeData } from '@/context/HomeDataContext';
 import { colors } from '@/constants/colors';
 
-export default function HomeScreen() {
+function HomeContent() {
+  const { refreshing, refresh } = useHomeData();
   const [selectedFilter, setSelectedFilter] = useState<string>('Semua');
 
   return (
@@ -19,10 +21,18 @@ export default function HomeScreen() {
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => void refresh()}
+            tintColor={colors.forest}
+          />
+        }
       >
         <HomeHeader />
         <View style={styles.content}>
           <ImpactCard />
+          <DepositsSection />
           <CollectionPointsCard />
           <CategoriesSection />
           <NewsSection
@@ -33,6 +43,14 @@ export default function HomeScreen() {
         </View>
       </ScrollView>
     </SafeAreaView>
+  );
+}
+
+export default function HomeScreen() {
+  return (
+    <HomeDataProvider>
+      <HomeContent />
+    </HomeDataProvider>
   );
 }
 

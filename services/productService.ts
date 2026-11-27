@@ -1,5 +1,11 @@
 import { delay } from "@/utils/delay";
 import { fetchJson } from "@/services/api";
+import {
+  deleteListing,
+  fetchListings,
+  insertListing,
+} from "@/services/listingService";
+import type { ListingRow } from "@/types/listing";
 import type { Product } from "@/data/marketplace";
 import type { ProductsApiResponse } from "@/types/product";
 import type { SellersApiResponse } from "@/types/user";
@@ -41,34 +47,58 @@ export function addProduct(input: NewProductInput): Promise<Product> {
       return;
     }
 
-    delay(800).then(() => {
-      const product: Product = {
-        id: `lokal-${Date.now()}`,
-        name: input.name.trim(),
-        price,
-        category: input.category,
-        condition: input.condition,
-        sellerName: input.sellerName.trim(),
-        city: input.city.trim(),
-        // Belum ada fitur unggah foto, jadi memakai gambar placeholder.
-        thumbnail: `https://picsum.photos/seed/${encodeURIComponent(input.name.trim())}/400`,
-      };
-      cachedProducts = [product, ...(cachedProducts ?? [])];
-      resolve(product);
-    });
+    insertListing({
+      name: input.name.trim(),
+      price,
+      category: input.category,
+      condition: input.condition,
+      seller_name: input.sellerName.trim(),
+      city: input.city.trim(),
+      // Belum ada fitur unggah foto, jadi memakai gambar placeholder.
+      thumbnail: `https://picsum.photos/seed/${encodeURIComponent(input.name.trim())}/400`,
+    })
+      .then((row) => {
+        const product = listingToProduct(row);
+        cachedProducts = [product, ...(cachedProducts ?? [])];
+        resolve(product);
+      })
+      .catch((err: unknown) =>
+        reject(err instanceof Error ? err.message : "Gagal menambahkan barang."),
+      );
   });
 }
 const CITIES = ["Purwokerto", "Banyumas", "Purbalingga", "Cilacap", "Sokaraja"];
 
 let cachedProducts: Product[] | null = null;
 
+function listingToProduct(row: ListingRow): Product {
+  return {
+    id: row.id,
+    name: row.name,
+    price: row.price,
+    category: row.category,
+    condition: row.condition,
+    sellerName: row.seller_name,
+    city: row.city,
+    thumbnail: row.thumbnail,
+    ownerId: row.user_id,
+  };
+}
+
+// Menghapus jualan milik user dari Supabase dan dari cache lokal.
+export async function removeProduct(id: string): Promise<void> {
+  await deleteListing(id);
+  cachedProducts = (cachedProducts ?? []).filter((p) => p.id !== id);
+}
+
 // Mengambil barang dan penjual dari API sekaligus, lalu menggabungkannya menjadi iklan.
-export async function getProducts(): Promise<Product[]> {
+export async function getProducts(forceRefresh = false): Promise<Product[]> {
+  if (forceRefresh) cachedProducts = null;
   if (cachedProducts) {
     return Promise.resolve(cachedProducts);
   }
 
-  const [sellers, categoryResponses] = await Promise.all([
+  const [sellers, categoryResponses, listings] = await Promise.all([
     fetchJson<SellersApiResponse>(
       "https://dummyjson.com/users?limit=30&select=firstName,lastName",
     ),
@@ -79,8 +109,10 @@ export async function getProducts(): Promise<Product[]> {
         ),
       ),
     ),
+    // Jualan milik user dari Supabase (dibatasi RLS).
+    fetchListings(),
   ]);
-  await delay(1000);
+  if (!forceRefresh) await delay(1000);
 
   const items = categoryResponses.flatMap((response) => response.products);
 
@@ -99,6 +131,7 @@ export async function getProducts(): Promise<Product[]> {
     };
   });
 
-  cachedProducts = products;
-  return products;
+  const all = [...listings.map(listingToProduct), ...products];
+  cachedProducts = all;
+  return all;
 }

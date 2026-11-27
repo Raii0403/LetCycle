@@ -1,3 +1,6 @@
+// Muhammad Iqbal Habibi 202410370110231
+
+
 import { AddProductModal } from "@/components/AddProductModal";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { Loading } from "@/components/Loading";
@@ -6,23 +9,23 @@ import { formatRupiah, type Product } from "@/data/marketplace";
 import { categoryLabels, getProducts } from "@/services/productService";
 import { Ionicons } from "@expo/vector-icons";
 import {
-  useEffect,
-  useMemo,
-  useState,
-  type Dispatch,
-  type SetStateAction,
+    useEffect,
+    useMemo,
+    useState,
+    type Dispatch,
+    type SetStateAction,
 } from "react";
 import {
-  Alert,
-  FlatList,
-  Image,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  useWindowDimensions,
-  View,
+    Alert,
+    FlatList,
+    Image,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    useWindowDimensions,
+    View,
 } from "react-native";
 
 // Memuat barang dan memperbarui tampilan sesuai hasil permintaan API.
@@ -73,7 +76,11 @@ function ProductCard({ item }: { item: Product }) {
               {item.sellerName}
             </Text>
             <View style={styles.cityRow}>
-              <Ionicons name="location-outline" size={11} color={colors.muted} />
+              <Ionicons
+                name="location-outline"
+                size={11}
+                color={colors.muted}
+              />
               <Text style={styles.city} numberOfLines={1}>
                 {item.city}
               </Text>
@@ -90,7 +97,11 @@ function ProductCard({ item }: { item: Product }) {
             )
           }
         >
-          <Ionicons name="chatbubble-ellipses-outline" size={15} color={colors.white} />
+          <Ionicons
+            name="chatbubble-ellipses-outline"
+            size={15}
+            color={colors.white}
+          />
           <Text style={styles.contactText}>Hubungi Penjual</Text>
         </Pressable>
       </View>
@@ -211,7 +222,9 @@ export default function MarketplaceScreen() {
           columnWrapperStyle={styles.row}
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
-          ListEmptyComponent={<Text style={styles.empty}>Tidak ada barang.</Text>}
+          ListEmptyComponent={
+            <Text style={styles.empty}>Tidak ada barang.</Text>
+          }
           renderItem={({ item }) => <ProductCard item={item} />}
         />
       )}
@@ -289,7 +302,13 @@ const styles = StyleSheet.create({
     fontSize: 9,
     fontWeight: "800",
   },
-  name: { minHeight: 34, color: colors.ink, fontWeight: "700", fontSize: 13, lineHeight: 17 },
+  name: {
+    minHeight: 34,
+    color: colors.ink,
+    fontWeight: "700",
+    fontSize: 13,
+    lineHeight: 17,
+  },
   price: { color: colors.green, fontWeight: "800", fontSize: 15 },
   sellerRow: { flexDirection: "row", alignItems: "center", gap: 7 },
   avatar: {

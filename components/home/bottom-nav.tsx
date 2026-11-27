@@ -13,6 +13,7 @@ const tabs = [
     activeIcon: "bag-handle",
   },
   { name: "Account", href: "/account", icon: "person-outline", activeIcon: "person" },
+  { name:"Daftar_Produk", href:"/DataProduk", icon:"bag-handle-outline", activeIcon:"bag-handle"},
 ] as const;
 
 // Navigasi utama dipasang di _layout sehingga tetap terlihat di semua halaman.
